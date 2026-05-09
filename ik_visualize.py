@@ -98,14 +98,14 @@ def main():
                 env.step(0.02)
             print(f"  [Sim] {JOINT_NAMES[idx]} done")
 
-        # FK verification
+        # FK verification — compare in robot frame (fk_pos is robot coords)
         q_verify = current_q.copy()
         fk = robot.fkine(q_verify, end=END_LINK)
         fk_pos = fk.t * 100
         pos_err = np.sqrt(
-            (fk_pos[0] - x) ** 2 +
-            (fk_pos[1] - y) ** 2 +
-            (fk_pos[2] - z) ** 2
+            (fk_pos[0] - x_r) ** 2 +
+            (fk_pos[1] - y_r) ** 2 +
+            (fk_pos[2] - z_r) ** 2
         )
         print(f"  FK check: ({fk_pos[0]:.1f}, {fk_pos[1]:.1f}, {fk_pos[2]:.1f}) cm, err: {pos_err:.3f} cm")
         print("✅ Done!\n")

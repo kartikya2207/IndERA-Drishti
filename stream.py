@@ -1,7 +1,10 @@
+import os
 import cv2
+from dotenv import load_dotenv
 
-# The URL of your ESP32-CAM stream
-stream_url = 'http://10.53.7.152:80/stream'
+load_dotenv()
+# Set ESP32_STREAM_URL in your .env file, e.g. ESP32_STREAM_URL=http://192.168.1.100:80/stream
+stream_url = os.getenv('ESP32_STREAM_URL', 'http://10.53.7.152:80/stream')
 
 # Open the video stream
 cap = cv2.VideoCapture(stream_url)
