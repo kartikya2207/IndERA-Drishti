@@ -1,4 +1,9 @@
-
+import sys
+if "google.colab" not in sys.modules:
+    raise ImportError(
+        "model.py is a Google Colab prototype and cannot be run outside Colab.\n"
+        "For local/production inference use model_engine.py instead."
+    )
 
 import torch
 from transformers import AutoProcessor, PaliGemmaForConditionalGeneration

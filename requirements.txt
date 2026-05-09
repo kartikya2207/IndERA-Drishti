@@ -7,3 +7,8 @@ pillow>=10.0
 opencv-python>=4.9
 python-dotenv>=1.0
 requests>=2.31
+pyserial>=3.5             # robot_controller.py serial communication with Arduino
+pyvirtualcam>=0.10        # virt_camera.py virtual webcam output
+
+# Robotics stack (install separately — large packages):
+# pip install roboticstoolbox-python spatialmath-python swift-sim

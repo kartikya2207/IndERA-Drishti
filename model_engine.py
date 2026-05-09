@@ -177,8 +177,8 @@ def run_inference(image: Image.Image, inventory_groups: list[str] | None = None)
     #     f"Answer exactly in this format -> Object: [name], Group: [category], Description: [detailed description]"
     # )
     prompt = (
-        f"<image> Identify the main object in this image. "
-        f"Answer exactly in this format -> Object: [name of object], Group: [invent a suitable category for it], Description: [brief visual description]"
+        f"<image> Identify the main object in this image and classify it into one of these groups: {groups_str}. "
+        f"Answer exactly in this format -> Object: [name of object], Group: [one of: {groups_str}], Description: [brief visual description]"
     )
     print(f"[ModelEngine] Running inference with prompt: {prompt}")
     # print(f"[ModelEngine] Targeted groups: {inventory_groups}")
