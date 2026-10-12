@@ -19,3 +19,7 @@ Thumbs.db
 
 # Arduino build output
 build/
+
+# Secrets
+.env*
+!.env.example
