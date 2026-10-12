@@ -24,9 +24,18 @@ The pipeline we aimed for:
 
 **Arm model and IK.** We wrote `custom_arm.urdf` by hand from measurements of the physical arm: 5 revolute joints (base, shoulder, elbow, wrist roll, wrist pitch), each limited to ±90°, plus a gripper on its own servo (the finger joints are `fixed` because roboticstoolbox ignores URDF `<mimic>`). `arm_common.py` wraps roboticstoolbox's Levenberg–Marquardt solver (`ik_LM`, position-only mask, `tol=1e-6`) in a random-restart loop. Each candidate is checked with forward kinematics and rejected if it is off by 10 mm (then 20 mm on re-verification); among the survivors it picks the one with the smallest joint movement and least wrist roll. Servo-side limits are separate from the URDF ones, e.g. the shoulder is capped at 140° because it inverts past that.
 
+![URDF model in Swift](docs/images/urdf_swift_render.png)
+*The hand-written URDF of the arm rendered in the Swift simulator, reaching an IK-solved pose (from the project report).*
+
 **Firmware and serial protocol.** `arm_controller/arm_controller.ino` runs on a single Arduino and handles the six servos, the conveyor motor driver and the ultrasonic sensor. The host talks to it over 115200-baud serial: six comma-separated angles for a pose, plus text commands like `HOME`, `CONVEYOR:ON`, `SENSOR:THRESHOLD:N`. The Arduino replies with `DONE:<joint>`, `ALL_DONE`, `OBJECT_DETECTED`, etc. Joints move one at a time in a fixed order (elbow, shoulder, base, wrist roll, wrist pitch, then gripper), 1° per step with a 15 ms delay. That ordering came out of breaking things (see below).
 
 **Vision.** `model_engine.py` loads PaliGemma once (bfloat16, `device_map="auto"`), runs greedy decoding and parses the text reply into a structured result. `app.py` is a Flask dashboard that proxies the ESP32 MJPEG stream, lets you drag a region of interest on the feed, runs inference on a snapshot and pushes results to the page over Server-Sent Events. `model.py` is the earlier Google Colab prototype of the same thing.
+
+![Vision detection on the conveyor](docs/images/vision_detection.jpg)
+*ESP32-CAM frame with the region of interest and PaliGemma's label for a fan on the belt (from the project report).*
+
+![Flask dashboard](docs/images/dashboard.jpg)
+*The Flask dashboard: live stream with ROI, the crop sent to the model, classification output and system log (from the project report).*
 
 **Orchestration.** `robot_controller.py` ties the solver, the Swift simulator and the Arduino together. It has a manual mode (`pick x y z`, `home`, `grip:open`) and a `conveyor` mode that checks both pick and place points are reachable before starting the loop.
 
